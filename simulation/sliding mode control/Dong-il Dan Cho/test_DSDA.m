@@ -3,7 +3,7 @@ clear; clc; close all;
 %% declare
 % sim
 dt = 0.002;
-t = 0:dt:1.5;	% ragne of time
+t = 0:dt:1.5;	% range of time
 IC = [0 0]';
 
 % Plant
@@ -21,6 +21,8 @@ DSVC_DDC_parm.g = 0.5;      % 0 <  g <  1, define obv convergance time
 DSVC_DDC_parm.Eta = 0.41;    % robust gain
 DSVC_DDC_parm.a = 0.97;     % 
 bound = getBound(Pssd,DSVC_DDC_parm);
+
+
 
 %% sim
 simOut = sim_DSVC_DDC(t,Pssd,DSVC_DDC_parm);
@@ -52,8 +54,6 @@ disp_DSVC_DDC(Pssd,DSVC_DDC_parm);
 
 
 
-
-
 %% function
 function simOut = sim_DSVC_DDC(time,Pssd,DSVC_DDC_parm)
     %% extract
@@ -63,9 +63,21 @@ function simOut = sim_DSVC_DDC(time,Pssd,DSVC_DDC_parm)
     Eta = DSVC_DDC_parm.Eta;
     phi = DSVC_DDC_parm.phi;
     a = DSVC_DDC_parm.a;
+    assignin('base','q',q);
+    assignin('base','g',g);
+    assignin('base','Eta',Eta);
+    assignin('base','phi',phi);
 
     K = fliplr( poly(-Lambda*ones(1,1)) );
+    assignin('base','K',K);
+    
     ulim = 24;
+    assignin('base','ulim',ulim);
+
+    % extract
+    [A,B,~,~] = ssdata(Pssd);
+    assignin('base','B',B);
+    assignin('base','A',A);
 
     %% initialize
     lenT = length(time)-1;
@@ -88,9 +100,6 @@ function simOut = sim_DSVC_DDC(time,Pssd,DSVC_DDC_parm)
         s_pre = sTemp(k-1);
         u_pre = uTemp(k-1);
         z_pre = zTemp(k-1);
-
-        % extract
-        [A,B,~,~] = ssdata(Pssd);
 
         % desired
         w = 1;

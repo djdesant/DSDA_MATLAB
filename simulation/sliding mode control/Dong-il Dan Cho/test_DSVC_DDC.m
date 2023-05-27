@@ -3,7 +3,7 @@ clear; clc; close all;
 %% declare
 % sim
 dt = 0.004;
-t = 0:dt:1.5;	% ragne of time
+t = 0:dt:1.5;	% range of time
 IC = [0 0]';
 
 % Plant
